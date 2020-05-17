@@ -1,9 +1,19 @@
+/*
+ * @File: options
+ * @Date: 2020/5/17 7:00 下午
+ * @Author: ferried
+ * @Email: harlancui@outlook.com
+ * @Software: GoLand
+ * @Desc: null
+ * @License: null
+ */
+
 package servicemesh
 
 type Options struct {
-	IstioPilotHost            string `json:"istioPilotHost,omitempty" yaml:"istioPilotHost"`
-	JaegerQueryHost           string `json:"jaegerQueryHost,omitempty" yaml:"jaegerQueryHost"`
-	ServicemeshPrometheusHost string `json:"servicemeshPrometheusHost,omitempty" yaml:"servicemeshPrometheusHost"`
+	IstioPilotHost            string
+	JaegerQueryHost           string
+	ServicemeshPrometheusHost string
 }
 
 func NewServiceMeshOptions() *Options {
