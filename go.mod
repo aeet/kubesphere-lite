@@ -8,6 +8,7 @@ require (
 	gopkg.in/yaml.v2 v2.2.8
 	istio.io/client-go v0.0.0-20191113122552-9bd0ba57c3d2
 	k8s.io/apiextensions-apiserver v0.17.3
+	k8s.io/apimachinery v0.17.1-beta.0
 	k8s.io/client-go v0.17.3
 
 )

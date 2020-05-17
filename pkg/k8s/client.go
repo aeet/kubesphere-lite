@@ -18,7 +18,6 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/clientcmd"
-	"strings"
 )
 
 type Client interface {
@@ -43,41 +42,11 @@ type kubernetesClient struct {
 	config          *rest.Config
 }
 
-func NewKubernetesClientOrDie(options *KubernetesOptions) Client {
-	config, err := clientcmd.BuildConfigFromFlags("", options.KubeConfig)
-	if err != nil {
-		panic(err)
-	}
-
-	config.QPS = options.QPS
-	config.Burst = options.Burst
-
-	k := &kubernetesClient{
-		k8s:             kubernetes.NewForConfigOrDie(config),
-		discoveryClient: discovery.NewDiscoveryClientForConfigOrDie(config),
-		istio:           istioclient.NewForConfigOrDie(config),
-		application:     applicationclientset.NewForConfigOrDie(config),
-		snapshot:        snapshotclient.NewForConfigOrDie(config),
-		apiextensions:   apiextensionsclient.NewForConfigOrDie(config),
-		master:          config.Host,
-		config:          config,
-	}
-
-	if options.Master != "" {
-		k.master = options.Master
-	}
-	if !strings.HasPrefix(k.master, "http://") && !strings.HasPrefix(k.master, "https://") {
-		k.master = "https://" + k.master
-	}
-	return k
-}
-
 func NewKubernetesClient(options *KubernetesOptions) (Client, error) {
-	config, err := clientcmd.BuildConfigFromFlags("", options.KubeConfig)
+	config, err := clientcmd.BuildConfigFromFlags("http://222.30.194.253:8080", options.KubeConfig)
 	if err != nil {
 		return nil, err
 	}
-
 	config.QPS = options.QPS
 	config.Burst = options.Burst
 
