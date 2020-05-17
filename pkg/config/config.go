@@ -11,17 +11,17 @@ package config
 
 import (
 	"my-kubesphere/pkg/k8s"
-	"my-kubesphere/pkg/server"
+	"my-kubesphere/pkg/servicemesh"
 )
 
 type Config struct {
-	ServerRunOptions  *server.ServerRunOptions
-	KubernetesOptions *k8s.KubernetesOptions
+	KubernetesOptions  *k8s.KubernetesOptions
+	ServiceMeshOptions *servicemesh.Options
 }
 
 func New() *Config {
 	return &Config{
-		ServerRunOptions:  server.NewServerRunOptions(),
-		KubernetesOptions: k8s.NewKubernetesOptions(),
+		KubernetesOptions:  k8s.NewKubernetesOptions(),
+		ServiceMeshOptions: servicemesh.NewServiceMeshOptions(),
 	}
 }

@@ -9,7 +9,7 @@
  */
 package server
 
-type ServerRunOptions struct {
+type GinServerRunOptions struct {
 	BindAddress   string
 	InsecurePort  int
 	SecurePort    int
@@ -17,8 +17,8 @@ type ServerRunOptions struct {
 	TlsPrivateKey string
 }
 
-func NewServerRunOptions() *ServerRunOptions {
-	s := ServerRunOptions{
+func NewServerRunOptions() *GinServerRunOptions {
+	s := GinServerRunOptions{
 		BindAddress:   "0.0.0.0",
 		InsecurePort:  9090,
 		SecurePort:    0,
