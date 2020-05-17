@@ -22,7 +22,6 @@ type InformerFactory interface {
 	ApplicationSharedInformerFactory() applicationinformers.SharedInformerFactory
 	SnapshotSharedInformerFactory() snapshotinformer.SharedInformerFactory
 	ApiExtensionSharedInformerFactory() apiextensionsinformers.SharedInformerFactory
-	Start(stopCh <-chan struct{})
 }
 
 type informerFactories struct {
@@ -78,26 +77,4 @@ func (f *informerFactories) SnapshotSharedInformerFactory() snapshotinformer.Sha
 
 func (f *informerFactories) ApiExtensionSharedInformerFactory() apiextensionsinformers.SharedInformerFactory {
 	return f.apiextensionsInformerFactory
-}
-
-func (f *informerFactories) Start(stopCh <-chan struct{}) {
-	if f.informerFactory != nil {
-		f.informerFactory.Start(stopCh)
-	}
-
-	if f.istioInformerFactory != nil {
-		f.istioInformerFactory.Start(stopCh)
-	}
-
-	if f.appInformerFactory != nil {
-		f.appInformerFactory.Start(stopCh)
-	}
-
-	if f.snapshotInformerFactory != nil {
-		f.snapshotInformerFactory.Start(stopCh)
-	}
-
-	if f.apiextensionsInformerFactory != nil {
-		f.apiextensionsInformerFactory.Start(stopCh)
-	}
 }
