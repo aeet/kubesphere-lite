@@ -19,10 +19,11 @@ import (
 	"my-kubesphere/pkg/informers"
 	"my-kubesphere/pkg/k8s"
 	"my-kubesphere/pkg/server"
+	"my-kubesphere/pkg/signals"
 	"net/http"
 )
 
-type ServerRunOptions struct {
+type RunOptions struct {
 	ConfigFile          string
 	Config              *config.Config
 	GinServerRunOptions *server.GinServerRunOptions
@@ -30,7 +31,7 @@ type ServerRunOptions struct {
 }
 
 func main() {
-	s := &ServerRunOptions{
+	s := &RunOptions{
 		ConfigFile:          "",
 		GinServerRunOptions: server.NewServerRunOptions(),
 		Config:              config.New(),
@@ -43,17 +44,24 @@ func main() {
 	kc.ExternalServices.PrometheusCustomMetricsURL = kc.ExternalServices.PrometheusServiceURL
 	kc.ExternalServices.Istio.UrlServiceVersion = s.Config.ServiceMeshOptions.IstioPilotHost
 	kiali.Set(kc)
-	apiserver, error := s.NewAPIServer()
+	error := Run(s, signals.SetupSignalHandler())
 	if error != nil {
-		fmt.Print(error)
-	}
-	serverError := apiserver.Server.ListenAndServe()
-	if serverError != nil {
-		fmt.Print(serverError)
+		fmt.Println(error)
 	}
 }
 
-func (s *ServerRunOptions) NewAPIServer() (*apiserver.APIServer, error) {
+func Run(s *RunOptions, stopCh <-chan struct{}) error {
+	apiserver, err := s.NewAPIServer()
+	if err != nil {
+		return err
+	}
+	if err != nil {
+		return nil
+	}
+	return apiserver.Run(stopCh)
+}
+
+func (s *RunOptions) NewAPIServer() (*apiserver.APIServer, error) {
 	apiServer := &apiserver.APIServer{
 		Config: s.Config,
 	}
