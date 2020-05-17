@@ -107,7 +107,6 @@ func (k *kubernetesClient) ApiExtensions() apiextensionsclient.Interface {
 	return k.apiextensions
 }
 
-// master address used to generate kubeconfig for downloading
 func (k *kubernetesClient) Master() string {
 	return k.master
 }
