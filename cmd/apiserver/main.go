@@ -14,26 +14,26 @@ import (
 	"crypto/tls"
 	"fmt"
 	kiali "github.com/kiali/kiali/config"
+	"my-kubesphere/pkg/apis"
 	"my-kubesphere/pkg/apiserver"
 	"my-kubesphere/pkg/config"
 	"my-kubesphere/pkg/informers"
 	"my-kubesphere/pkg/k8s"
 	"my-kubesphere/pkg/signals"
-	"my-kubesphere/pkg/web"
 	"net/http"
 )
 
 type RunOptions struct {
 	ConfigFile          string
 	Config              *config.Config
-	GinServerRunOptions *web.GinServerRunOptions
+	GinServerRunOptions *apis.GinServerRunOptions
 	DebugMode           bool
 }
 
 func main() {
 	s := &RunOptions{
 		ConfigFile:          "",
-		GinServerRunOptions: web.NewGinServerRunOptions(),
+		GinServerRunOptions: apis.NewGinServerRunOptions(),
 		Config:              config.New(),
 		DebugMode:           false,
 	}
@@ -77,8 +77,10 @@ func (s *RunOptions) NewAPIServer() (*apiserver.APIServer, error) {
 	apiServer.InformerFactory = informerFactory
 
 	webServer := &http.Server{
-		Addr: fmt.Sprintf(":%d", s.GinServerRunOptions.InsecurePort),
+		Addr:    fmt.Sprintf(":%d", s.GinServerRunOptions.InsecurePort),
+		Handler: apis.GenerateHandlers(*apiServer),
 	}
+
 	if s.GinServerRunOptions.SecurePort != 0 {
 		certificate, err := tls.LoadX509KeyPair(s.GinServerRunOptions.TlsCertFile, s.GinServerRunOptions.TlsPrivateKey)
 		if err != nil {
