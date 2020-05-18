@@ -11,9 +11,23 @@ package apiserver
 
 import (
 	"context"
+	"github.com/emicklei/go-restful"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/klog"
+	"my-kubesphere/pkg/config"
+	"my-kubesphere/pkg/informers"
+	"my-kubesphere/pkg/k8s"
+	"net/http"
 )
+
+type APIServer struct {
+	ServerCount      int
+	Server           *http.Server
+	Config           *config.Config
+	container        *restful.Container
+	KubernetesClient k8s.Client
+	InformerFactory  informers.InformerFactory
+}
 
 func (s *APIServer) Run(stopCh <-chan struct{}) (err error) {
 	err = s.waitForResourceSync(stopCh)

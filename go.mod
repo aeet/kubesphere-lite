@@ -2,6 +2,7 @@ module my-kubesphere
 
 require (
 	github.com/emicklei/go-restful v2.9.5+incompatible
+	github.com/gin-gonic/gin v1.5.0
 	github.com/kiali/kiali v0.15.1-0.20191210080139-edbbad1ef779
 	github.com/kubernetes-csi/external-snapshotter/v2 v2.1.1
 	github.com/kubernetes-sigs/application v0.0.0-20191210100950-18cc93526ab4
