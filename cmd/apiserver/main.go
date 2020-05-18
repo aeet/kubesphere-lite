@@ -59,6 +59,7 @@ func Run(s *RunOptions, stopCh <-chan struct{}) error {
 	if err != nil {
 		return err
 	}
+	apiServer.InstallAPI()
 	return apiServer.Run(stopCh)
 }
 

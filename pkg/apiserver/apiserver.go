@@ -48,7 +48,6 @@ func (s *APIServer) Run(stopCh <-chan struct{}) (err error) {
 		_ = s.Server.Shutdown(ctx)
 	}()
 	klog.V(0).Infof("Start listening on %s", s.Server.Addr)
-	s.InstallAPI()
 	if s.Server.TLSConfig != nil {
 		err = s.Server.ListenAndServeTLS("", "")
 	} else {
