@@ -43,7 +43,7 @@ type kubernetesClient struct {
 }
 
 func NewKubernetesClient(options *KubernetesOptions) (Client, error) {
-	config, err := clientcmd.BuildConfigFromFlags("http://222.30.194.253:8080", options.KubeConfig)
+	config, err := clientcmd.BuildConfigFromFlags("THERE IS YOUR K8S IP PORT", options.KubeConfig)
 	if err != nil {
 		return nil, err
 	}
