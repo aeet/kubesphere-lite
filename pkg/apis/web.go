@@ -11,10 +11,11 @@ package apis
 
 import (
 	"github.com/gin-gonic/gin"
+	"my-kubesphere/pkg/apis/namespace"
 )
 
 func GenerateHandlers() *gin.Engine {
 	r := gin.New()
-	r.GET("/auth")
+	r.GET("/namespace", namespace.NameSpaceList)
 	return r
 }
