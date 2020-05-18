@@ -78,7 +78,7 @@ func (s *RunOptions) NewAPIServer() (*apiserver.APIServer, error) {
 
 	webServer := &http.Server{
 		Addr:    fmt.Sprintf(":%d", s.GinServerRunOptions.InsecurePort),
-		Handler: apis.GenerateHandlers(*apiServer),
+		Handler: apis.GenerateHandlers(),
 	}
 
 	if s.GinServerRunOptions.SecurePort != 0 {

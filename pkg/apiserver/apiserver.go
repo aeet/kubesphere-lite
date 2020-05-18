@@ -20,6 +20,8 @@ import (
 	"net/http"
 )
 
+var API *APIServer
+
 type APIServer struct {
 	ServerCount      int
 	Server           *http.Server
@@ -47,6 +49,7 @@ func (s *APIServer) Run(stopCh <-chan struct{}) (err error) {
 	} else {
 		err = s.Server.ListenAndServe()
 	}
+	Api = s
 	return err
 }
 
