@@ -8,7 +8,7 @@
  * @License: null
  */
 
-package server
+package web
 
 type GinServerRunOptions struct {
 	BindAddress   string

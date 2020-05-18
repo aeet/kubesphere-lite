@@ -18,25 +18,33 @@ import (
 	"my-kubesphere/pkg/config"
 	"my-kubesphere/pkg/informers"
 	"my-kubesphere/pkg/k8s"
-	"my-kubesphere/pkg/server"
 	"my-kubesphere/pkg/signals"
+	"my-kubesphere/pkg/web"
 	"net/http"
 )
 
 type RunOptions struct {
 	ConfigFile          string
 	Config              *config.Config
-	GinServerRunOptions *server.GinServerRunOptions
+	GinServerRunOptions *web.GinServerRunOptions
 	DebugMode           bool
 }
 
 func main() {
 	s := &RunOptions{
 		ConfigFile:          "",
-		GinServerRunOptions: server.NewServerRunOptions(),
+		GinServerRunOptions: web.NewServerRunOptions(),
 		Config:              config.New(),
 		DebugMode:           false,
 	}
+	initKiali(s)
+	er := Run(s, signals.SetupSignalHandler())
+	if er != nil {
+		fmt.Println(er)
+	}
+}
+
+func initKiali(s *RunOptions) {
 	kc := kiali.NewConfig()
 	kc.API.Namespaces.Exclude = []string{"istio-system", "kubesphere*", "kube*"}
 	kc.InCluster = true
@@ -44,21 +52,14 @@ func main() {
 	kc.ExternalServices.PrometheusCustomMetricsURL = kc.ExternalServices.PrometheusServiceURL
 	kc.ExternalServices.Istio.UrlServiceVersion = s.Config.ServiceMeshOptions.IstioPilotHost
 	kiali.Set(kc)
-	error := Run(s, signals.SetupSignalHandler())
-	if error != nil {
-		fmt.Println(error)
-	}
 }
 
 func Run(s *RunOptions, stopCh <-chan struct{}) error {
-	apiserver, err := s.NewAPIServer()
+	apiServer, err := s.NewAPIServer()
 	if err != nil {
 		return err
 	}
-	if err != nil {
-		return nil
-	}
-	return apiserver.Run(stopCh)
+	return apiServer.Run(stopCh)
 }
 
 func (s *RunOptions) NewAPIServer() (*apiserver.APIServer, error) {
@@ -75,7 +76,7 @@ func (s *RunOptions) NewAPIServer() (*apiserver.APIServer, error) {
 	informerFactory := informers.NewInformerFactories(kubernetesClient.Kubernetes(), kubernetesClient.Istio(), kubernetesClient.Application(), kubernetesClient.Snapshot(), kubernetesClient.ApiExtensions())
 	apiServer.InformerFactory = informerFactory
 
-	server := &http.Server{
+	webServer := &http.Server{
 		Addr: fmt.Sprintf(":%d", s.GinServerRunOptions.InsecurePort),
 	}
 	if s.GinServerRunOptions.SecurePort != 0 {
@@ -83,8 +84,8 @@ func (s *RunOptions) NewAPIServer() (*apiserver.APIServer, error) {
 		if err != nil {
 			return nil, err
 		}
-		server.TLSConfig.Certificates = []tls.Certificate{certificate}
+		webServer.TLSConfig.Certificates = []tls.Certificate{certificate}
 	}
-	apiServer.Server = server
+	apiServer.Server = webServer
 	return apiServer, nil
 }
