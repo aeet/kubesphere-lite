@@ -18,7 +18,7 @@ type GinServerRunOptions struct {
 	TlsPrivateKey string
 }
 
-func NewServerRunOptions() *GinServerRunOptions {
+func NewGinServerRunOptions() *GinServerRunOptions {
 	s := GinServerRunOptions{
 		BindAddress:   "0.0.0.0",
 		InsecurePort:  9090,

@@ -33,7 +33,7 @@ type RunOptions struct {
 func main() {
 	s := &RunOptions{
 		ConfigFile:          "",
-		GinServerRunOptions: web.NewServerRunOptions(),
+		GinServerRunOptions: web.NewGinServerRunOptions(),
 		Config:              config.New(),
 		DebugMode:           false,
 	}
