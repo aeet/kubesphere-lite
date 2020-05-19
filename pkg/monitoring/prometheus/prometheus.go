@@ -55,7 +55,7 @@ var jsonIter = jsoniter.ConfigCompatibleWithStandardLibrary
 
 func (c *PrometheusClient) query(endpoint string, queryType string, params string) (apiResponse APIResponse) {
 	url := fmt.Sprintf("%s/api/v1/%s?%s", endpoint, queryType, params)
-
+	klog.V(0).Info(url)
 	response, err := c.client.Get(url)
 	if err != nil {
 		klog.Error(err)

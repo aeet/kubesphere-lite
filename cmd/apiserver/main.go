@@ -60,6 +60,7 @@ func Run(s *RunOptions, stopCh <-chan struct{}) error {
 		return err
 	}
 	apiServer.InstallAPI()
+	apiServer.CreatePrometheus()
 	return apiServer.Run(stopCh)
 }
 

@@ -19,10 +19,12 @@ import (
 )
 
 func MonitorCluster(ctx *gin.Context) {
-	r := ParseRequestParams(ctx)
-	var res *metrics.Response
-	res = metrics.GetClusterMetrics(r)
-	ctx.JSON(200, res)
+	//r := ParseRequestParams(ctx)
+	//var res *metrics.Response
+	//res = metrics.GetClusterMetrics(r)
+	abs := apiserver.Helper.PrometheusClient.QueryToK8SPrometheus("query", "query=APIServiceOpenAPIAggregationControllerQueue1_queue_latency_sum&time=1589874218.481&_=1589874202976")
+	ctx.JSON(200, abs)
+
 }
 
 func ParseRequestParams(c *gin.Context) metrics.RequestParams {
