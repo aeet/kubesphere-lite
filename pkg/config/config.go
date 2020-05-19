@@ -12,17 +12,20 @@ package config
 
 import (
 	"my-kubesphere/pkg/k8s"
+	"my-kubesphere/pkg/monitoring/prometheus"
 	"my-kubesphere/pkg/servicemesh"
 )
 
 type Config struct {
 	KubernetesOptions  *k8s.KubernetesOptions
 	ServiceMeshOptions *servicemesh.Options
+	MonitoringOptions  *prometheus.PrometheusOptions
 }
 
 func New() *Config {
 	return &Config{
 		KubernetesOptions:  k8s.NewKubernetesOptions(),
 		ServiceMeshOptions: servicemesh.NewServiceMeshOptions(),
+		MonitoringOptions:  prometheus.NewPrometheusOptions(),
 	}
 }

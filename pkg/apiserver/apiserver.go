@@ -11,16 +11,28 @@ package apiserver
 
 import (
 	"context"
+	"fmt"
 	"github.com/emicklei/go-restful"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/klog"
 	"my-kubesphere/pkg/config"
 	"my-kubesphere/pkg/informers"
 	"my-kubesphere/pkg/k8s"
+	"my-kubesphere/pkg/monitoring/prometheus"
 	"net/http"
+	"sync"
 )
 
-var API *APIServer
+var Helper *APIServer
+var mutex sync.Mutex
+
+type ClientSetNotEnabledError struct {
+	err error
+}
+
+func (e ClientSetNotEnabledError) Error() string {
+	return fmt.Sprintf("client set not enabled: %v", e.err)
+}
 
 type APIServer struct {
 	ServerCount      int
@@ -28,11 +40,12 @@ type APIServer struct {
 	Config           *config.Config
 	container        *restful.Container
 	KubernetesClient k8s.Client
+	PrometheusClient *prometheus.PrometheusClient
 	InformerFactory  informers.InformerFactory
 }
 
 func (s *APIServer) InstallAPI() {
-	API = s
+	Helper = s
 }
 
 func (s *APIServer) Run(stopCh <-chan struct{}) (err error) {
@@ -169,4 +182,16 @@ func (s *APIServer) waitForResourceSync(stopCh <-chan struct{}) error {
 	apiextensionsInformerFactory.WaitForCacheSync(stopCh)
 	klog.V(0).Info("Finished caching objects")
 	return nil
+}
+
+func (server *APIServer) CreatePrometheus() error {
+	var err error
+	mutex.Lock()
+	defer mutex.Unlock()
+	server.PrometheusClient, err = prometheus.NewPrometheusClient(server.Config.MonitoringOptions)
+	if err == nil {
+		return nil
+	} else {
+		return err
+	}
 }

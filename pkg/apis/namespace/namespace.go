@@ -16,6 +16,6 @@ import (
 )
 
 func NameSpaceList(ctx *gin.Context) {
-	list, _ := apiserver.API.InformerFactory.KubernetesSharedInformerFactory().Core().V1().Namespaces().Lister().List(labels.Everything())
+	list, _ := apiserver.Helper.InformerFactory.KubernetesSharedInformerFactory().Core().V1().Namespaces().Lister().List(labels.Everything())
 	ctx.JSON(200, list)
 }
