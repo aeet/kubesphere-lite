@@ -11,8 +11,8 @@ type PrometheusOptions struct {
 
 func NewPrometheusOptions() *PrometheusOptions {
 	return &PrometheusOptions{
-		Endpoint:          "http://222.30.194.225:30323",
-		SecondaryEndpoint: "http://222.30.194.225:30323",
+		Endpoint:          "",
+		SecondaryEndpoint: "",
 	}
 }
 
